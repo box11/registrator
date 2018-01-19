@@ -84,6 +84,11 @@ func (r *ConsulAdapter) Register(service *bridge.Service) error {
 	registration.Tags = service.Tags
 	registration.Address = service.IP
 	registration.Check = r.buildCheck(service)
+
+	if enableTagOverride, err := strconv.ParseBool(service.Attrs["enable_tag_override"]); err == nil {
+		registration.EnableTagOverride = enableTagOverride
+	}
+	
 	return r.client.Agent().ServiceRegister(registration)
 }
 
